@@ -1,0 +1,131 @@
+Account aanmaken 
+
+Verwijder een eventuele aanwezige gebruiker EXTR2.  
+Maak vervolgens  een nieuwe gebruiker aan die alleen op de database kan inloggen nadat hij 
+eerst op de lokale host in Windows ingelogd is, met inlognaam EXTR2 en bedenk zelf een 
+wachtwoord.  
+
+Zorg ervoor dat deze gebruiker SELECT, INSERT, UPDATE en DELETE commando’s kan uitvoeren 
+op de tabellen Toetsen en Cijfers en slechts SELECT commando’s kan uitvoeren op de tabellen 
+Docenten, DocentVakken, Klassen, Lokalen, Rooster, Studenten en Vakken. Zet alle SQL
+commando’s die je hiervoor nodig hebt alsmede een screenprint van het uitvoeren in het Word 
+document. 
+
+USE MBO_ICT; 
+CREATE USER EXTR2@localhost IDENTIFIED BY 'DitishetPaswoord'; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON Toetsen TO EXTR2@localhost; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON Cijfers TO EXTR2@localhost; 
+GRANT SELECT ON Docenten TO EXTR2@localhost; 
+GRANT SELECT ON DocentVakken TO EXTR2@localhost; 
+GRANT SELECT ON Klassen TO EXTR2@localhost; 
+GRANT SELECT ON Lokalen TO EXTR2@localhost; 
+GRANT SELECT ON Rooster TO EXTR2@localhost; 
+GRANT SELECT ON Studenten TO EXTR2@localhost; 
+GRANT SELECT ON Vakken TO EXTR2@localhost; 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Queries maken 
+
+Je maakt de queries in de Workbench. Er zijn twee categorieën queries, eenvoudig en complex. 
+Zet alle SQL-commando’s die je hiervoor nodig hebt alsmede een screenprint van het uitvoeren 
+in het Word document. 
+
+
+Eenvoudig: 
+1) Selecteer alle data uit de tabel Cijfers. 
+
+USE MBO_ICT; 
+SELECT * FROM Cijfers;
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer StudentNummer en Cijfer uit de tabel Cijfers voor de toets DBASEL1P2 
+(periode 2 toets van 1e studiejaar voor het vak databases). 
+
+USE MBO_ICT; 
+SELECT StudentNummer, Cijfer FROM Cijfers WHERE ToetsCode = 'DBASEL1P2';
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer StudentNummer en Cijfer uit de tabel Cijfers voor de toets DBASEL1P2 
+(periode 2 toets van 1e studiejaar voor het vak databases). Sorteer het resultaat eerst op 
+cijfer (hoogste cijfer boven en daarna aflopend) en daarna op StudentNummer (laagste 
+studentnummer boven en daarna oplopend). 
+
+USE MBO_ICT; 
+SELECT StudentNummer, Cijfer FROM Cijfers WHERE ToetsCode = 'DBASEL1P2' 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer het laagste cijfer, het hoogste cijfer en het gemiddelde cijfer uit de tabel Cijfers 
+voor de toets DBASEL1P2 (periode 2 toets van 1e studiejaar voor het vak databases). 
+Hernoem de header van de kolommen achtereenvolgens naar MinCijfer, MaxCijfer en 
+GemCijfer. 
+
+USE MBO_ICT; 
+SELECT MIN(Cijfer) AS MinCijfer, MAX(Cijfer) AS MaxCijfer, AVG(Cijfer) AS GemCijfer 
+FROM Cijfers WHERE ToetsCode = 'DBASEL1P2';
+ORDER BY Cijfer DESC, StudentNummer ASC;
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Complex: 
+
+1) Selecteer het studentnummer, de voornaam, het tussenvoegsel en de achternaam uit de 
+tabel Studenten die een cijfer 10 hebben behaald voor de toets DBASEL1P2. 
+m.b.v. SUB-query: 
+
+USE MBO_ICT; 
+SELECT StudentNummer, Voornaam, Tussenvoegsel, Achternaam FROM Studenten 
+WHERE StudentNummer IN 
+(SELECT StudentNummer FROM Cijfers WHERE ToetsCode = 'DBASEL1P2' AND Cijfer 
+= 10); 
+
+M.b.v. JOIN: 
+
+SELECT Studenten.StudentNummer, Voornaam, Tussenvoegsel, Achternaam FROM 
+Studenten INNER JOIN Cijfers ON Studenten.StudentNummer = 
+Cijfers.StudentNummer WHERE ToetsCode = 'DBASEL1P2' AND Cijfer = 10;
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ Selecteer alle gegevens uit de tabel Toetsen waarvoor er nog géén cijfers in de tabel 
+Cijfers zijn ingevoerd. 
+M.b.v. SUB-query:
+ 
+USE MBO_ICT; 
+ 
+SELECT * FROM Toetsen WHERE ToetsCode NOT IN (SELECT ToetsCode FROM 
+CIjfers); 
+ 
+ 
+M.b.v. JOIN: 
+ 
+USE MBO_ICT; 
+SELECT Toetsen.* FROM Toetsen LEFT OUTER JOIN Cijfers ON Toetsen.ToetsCode = 
+Cijfers.ToetsCode WHERE Cijfers.ToetsCode IS NULL; 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+ Selecteer alle gegevens uit de tabel Cijfers voor de studenten die voor de toets 
+DBASEL1P2 een lager cijfer hebben behaald dan het gemiddelde voor de toets 
+DBASEL1P2. 
+
+USE MBO_ICT; 
+SELECT * FROM Cijfers WHERE ToetsCode = 'DBASEL1P2' AND Cijfer < ( SELECT 
+AVG(Cijfer) FROM Cijfers WHERE ToetsCode = 'DBASEL1P2'); 
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Gegevens toevoegen, aanpassen, verwijderen 
+
+Verander in de tabel Cijfers het behaalde cijfer voor de toets DBASEL1P2 door de student met 
+het studentnummer 4 naar het cijfer 7.7. 
+
+Verwijder uit de tabel Cijfers de rij met de gegevens voor de toets DBASEL1P2 van de student 
+met het studentnummer 5; 
+
+USE MBO_ICT; 
+UPDATE Cijfers SET Cijfer = 7.7 WHERE ToetsCode = 'DBASEL1P2' AND Studentnummer = 4; 
+DELETE FROM Cijfers WHERE ToetsCode = 'DBASEL1P2' AND Studentnummer = 5;
