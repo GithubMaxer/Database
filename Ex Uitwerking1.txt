@@ -1,0 +1,102 @@
+
+1 
+Account aanmaken 
+Maak een nieuwe gebruiker aan die vanuit elke host op de database kan inloggen, met 
+inlognaam EXTR1 en bedenk zelf een wachtwoord. Zorg ervoor dat deze gebruiker SELECT, 
+INSERT, UPDATE en DELETE commando’s kan uitvoeren op alle tabellen behalve op de tabel 
+Salarissen. Zet alle SQL-commando’s die je hiervoor nodig hebt alsmede een screenprint van 
+het uitvoeren in het Word document. 
+
+USE MBO_ICT; 
+
+CREATE USER EXTR1@'%' IDENTIFIED BY 'Paswoord'; 
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON Docenten TO EXTR1@'%';
+ 
+GRANT SELECT, INSERT, UPDATE, DELETE ON DocentVakken TO EXTR1@'%'; 
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON Klassen TO EXTR1@'%'; 
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON Lokalen TO EXTR1@'%';
+ 
+GRANT SELECT, INSERT, UPDATE, DELETE ON Rooster TO EXTR1@'%'; 
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON Studenten TO EXTR1@'%'; 
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON Vakken TO EXTR1@'%'; 
+
+----------------------------------------------------------------------------------------------
+
+Queries maken 
+Je maakt de queries in de Workbench. Er zijn twee categorieën queries, eenvoudig en complex. 
+Zet alle SQL-commando’s die je hiervoor nodig hebt alsmede een screenprint van het uitvoeren 
+in het Word document. 
+
+Eenvoudig: 
+1) Selecteer alle data uit de tabel Studenten. 
+
+SELECT * FROM Studenten; 
+
+2) Selecteer StudentNummer, Voornaam, Tussenvoegsel, Achternaam en Klas uit de tabel 
+Studenten. 
+
+SELECT StudentNummer, Voornaam, Tussenvoegsel, Achternaam, Klas FROM Studenten; 
+
+3) Selecteer StudentNummer, Voornaam, Tussenvoegsel, Achternaam en Klas uit de tabel 
+Studenten, sorteer op Klas en vervolgens op Achternaam. 
+
+SELECT StudentNummer, Voornaam, Tussenvoegsel, Achternaam, Klas FROM Studenten ORDER BY Klas, Achternaam; 
+
+4) Selecteer StudentNummer, Voornaam, Tussenvoegsel, Achternaam en Klas uit de tabel 
+Studenten, laat alleen de klassen zien die beginnen met de letter “1”, sorteer op Klas, en 
+vervolgens op Achternaam. 
+
+SELECT StudentNummer, Voornaam, Tussenvoegsel, Achternaam, Klas  
+FROM Studenten  
+WHERE Klas LIKE '1%'  
+ORDER BY Klas, Achternaam; 
+
+------------------------------------------------------------------------------------------------------------------------
+
+Complex: 
+1) Selecteer het docentnummer, de voornaam, het tussenvoegsel en de achternaam uit de 
+tabel Docenten die les geven in het vak met vakcode DBASE. 
+
+SELECT DocentNummer, Voornaam, TussenVoegsel, Achternaam  
+FROM Docenten  
+WHERE DocentNummer IN  
+(SELECT DocentNummer FROM DocentVakken WHERE VakCode = 'DBASE'); 
+SELECT Docenten.DocentNummer, Docenten.Voornaam, Docenten.TussenVoegsel, 
+Docenten.Achternaam  
+FROM Docenten INNER JOIN DocentVakken 
+ON Docenten.DocentNummer = DocentVakken.DocentNummer 
+WHERE DocentVakken.VakCode = 'DBASE'; 
+
+
+2) Selecteer het docentnummer, de voornaam, het tussenvoegsel en de achternaam van 
+alle vrouwelijke docenten uit de tabel Docenten die les geven in het vak met vakcode 
+DBASE. 
+SELECT Docenten.DocentNummer, Docenten.Voornaam, Docenten.TussenVoegsel, 
+Docenten.Achternaam  
+
+
+FROM Docenten INNER JOIN DocentVakken 
+ON Docenten.DocentNummer = DocentVakken.DocentNummer 
+WHERE DocentVakken.VakCode = 'DBASE' 
+AND Docenten.Geslacht = 'V'; 
+
+
+3) Selecteer de klas, voornaam, tussenvoegsel en achternaam van alle docenten die géén 
+mentor zijn van een klas. 
+SELECT Klassen.Klas, Docenten.Voornaam, Docenten.Tussenvoegsel, 
+Docenten.Achternaam  
+
+
+FROM Docenten LEFT OUTER JOIN Klassen  
+ON Docenten.DocentNummer = Klassen.Mentor  
+WHERE Klassen.Klas IS NULL; 
+Gegevens toevoegen 
+Voer een nieuwe student toe in de tabel Studenten en bedenk zelf de gegevens voor deze 
+student. 
+INSERT INTO Studenten VALUES (296, 'Jan', '', 'Klaasen', 'M', 'Hoofdstraat',12, '', '1234 AB', 'Den 
+Haag', '1999-04-17', 'Den Haag', '1B'); 
