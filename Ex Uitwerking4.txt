@@ -1,0 +1,111 @@
+Account aanmaken 
+
+Verwijder een eventuele aanwezige gebruiker EXTR4. 
+ 
+Maak vervolgens voor de afdeling studentenadministratie een nieuwe gebruiker aan die vanuit 
+alle hosts op de database kan inloggen, met inlognaam EXTR4 en bedenk zelf een wachtwoord.  
+
+Zorg ervoor dat deze gebruiker de volgende commando’s kan uitvoeren: 
+	• SELECT, INSERT, UPDATE en DELETE op de tabel Studenten  
+	• SELECT op tabel Klassen 
+	• SELECT op tabel Docenten 
+
+Zet alle SQL-commando’s die je hiervoor nodig hebt alsmede een screenprint van het uitvoeren 
+in dit Word document. 
+
+CREATE USER EXTR4@'%' IDENTIFIED BY "MooiWachtwoord"; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON Studenten TO EXTR4@'%'; 
+GRANT SELECT ON Klassen TO EXTR4@'%'; 
+GRANT SELECT ON Docenten TO EXTR4@'%'; 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Queries maken 
+
+Je maakt de queries in de Workbench. Er zijn twee categorieën queries, eenvoudig en complex. 
+Zet alle SQL-commando’s die je hiervoor nodig hebt alsmede een screenprint van het uitvoeren 
+in het Word document. 
+
+Eenvoudig: 
+
+1) Selecteer alle data uit de tabel Salarissen. 
+Zet alle SQL-commando’s die je hiervoor nodig hebt alsmede een screenprint van het 
+uitvoeren in het Word document. 
+
+SELECT *  
+FROM Salarissen; 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer het salaris en dan het docentnummer uit de tabel Salarissen en sorteer het 
+resultaat op Salaris waarbij het hoogste salaris bovenin de lijst komt te staan. 
+Zet alle SQL-commando’s die je hiervoor nodig hebt alsmede een screenprint van het 
+uitvoeren in het Word document. 
+
+SELECT Salaris, Docentnummer  
+FROM Salarissen  
+ORDER BY Salaris DESC; 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer het docentnummer en het salaris uit de tabel Salarissen, waarvan het salaris 
+ligt tussen 3000 en 4000 euro. Hernoem de kolomnaam Docentnummer naar Medior. 
+
+SELECT Docentnummer AS Medior, Salaris  
+FROM Salarissen  
+WHERE Salaris BETWEEN 3000 AND 4000; 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer het minimum salaris, het maximum salaris en het gemiddelde salaris uit de 
+tabel Salarissen en hernoem de kolomkoppen naar respectievelijk Minimum, Maximum 
+en Gemiddeld. 
+
+SELECT MIN(Salaris) AS Minimum, MAX(Salaris) AS Maximum, AVG(Salaris) AS 
+Gemiddeld 
+FROM Salarissen; 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Complex: 
+
+1) Selecteer alle gegevens uit de tabel Salarissen van alle docenten die wel voorkomen in 
+de tabel Salarissen maar niet voorkomen in de tabel Docenten. 
+
+SELECT Salarissen.* FROM Salarissen LEFT OUTER JOIN Docenten  
+ON Salarissen.DocentNummer = Docenten.DocentNummer 
+WHERE Docenten.DocentNummer  IS NULL; 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer het docentnummer, voornaam, tussenvoegsel, achternaam en het salaris uit 
+de tabellen Docenten en Salarissen en sorteer op salaris met het hoogste salaris 
+bovenaan de lijst. 
+
+SELECT Docenten.DocentNummer, Voornaam, TussenVoegsel, AchterNaam, Salaris  
+FROM Docenten INNER JOIN Salarissen  
+ON Docenten.DocentNummer = Salarissen.DocentNummer  
+ORDER BY Salaris DESC; 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer het docentnummer en salaris uit de tabel Salarissen van alle docenten die een 
+hoger salaris hebben dan het gemiddelde salaris. 
+
+SELECT DocentNummer, Salaris   
+FROM Salarissen  
+WHERE Salaris > (SELECT AVG(Salaris) FROM Salarissen); 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Gegevens toevoegen, aanpassen, verwijderen 
+
+Verander het salaris van docent met docentnummer 7 naar 4500. 
+Verwijder uit de tabel Salaris de gegevens van de docent met docentnummer 8. 
+Voer een nieuwe rij in met docentnummer 8 en salaris 4600. 
+
+UPDATE Salarissen SET Salaris = 4500 WHERE DocentNummer = 7; 
+DELETE FROM Salarissen WHERE DocentNummer = 8; 
+INSERT INTO Salarissen (DocentNummer, Salaris) VALUES (8,4600); 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
