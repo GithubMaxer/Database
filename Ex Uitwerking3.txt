@@ -1,0 +1,121 @@
+Account aanmaken 
+
+Verwijder een eventuele aanwezige gebruiker EXTR3. 
+ 
+Maak vervolgens  een nieuwe gebruiker aan die alleen op de database kan inloggen vanuit een 
+host met ip-address 192.168.178.242, met inlognaam EXTR3 en bedenk zelf een wachtwoord.  
+
+Zorg ervoor dat deze gebruiker SELECT, INSERT, UPDATE en DELETE commando’s kan uitvoeren 
+op de tabel Rooster en slechts SELECT commando’s kan uitvoeren op de tabellen Klassen, 
+Lokalen en DocentVakken. 
+
+Zet alle SQL-commando’s die je hiervoor nodig hebt alsmede een screenprint van het uitvoeren 
+in het Word document. 
+
+USE MBO_ICT; 
+CREATE USER EXTR3@192.168.178.242 IDENTIFIED BY 'HetPaswoord'; 
+GRANT SELECT, INSERT, UPDATE, DELETE ON Rooster TO EXTR3@192.168.178.242; 
+GRANT SELECT ON Klassen TO EXTR3@192.168.178.242; 
+GRANT SELECT ON Lokalen TO EXTR3@192.168.178.242; 
+GRANT SELECT ON DocentVakken TO EXTR3@192.168.178.242;
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Queries maken 
+Je maakt de queries in de Workbench. Er zijn twee categorieën queries, eenvoudig en complex. 
+Zet alle SQL-commando’s die je hiervoor nodig hebt alsmede een screenprint van het uitvoeren 
+in het Word document. 
+
+Eenvoudig: 
+
+1) Selecteer alle data uit de tabel Docenten. 
+Zet alle SQL-commando’s die je hiervoor nodig hebt alsmede een screenprint van het 
+uitvoeren in het Word document. 
+ 
+ 
+USE MBO_ICT; 
+SELECT * FROM Docenten;
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer de woonplaats en het docentnummer uit de tabel Docenten en sorteer het 
+resultaat eerst op Woonplaats en daarna op DocentNummer. 
+Zet alle SQL-commando’s die je hiervoor nodig hebt alsmede een screenprint van het 
+uitvoeren in het Word document. 
+ 
+ 
+USE MBO_ICT; 
+SELECT Woonplaats, DocentNummer FROM Docenten ORDER BY Woonplaats, 
+DocentNummer; 
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer de woonplaatsen en het aantal docenten die in de betreffende woonplaatsen 
+wonen uit de tabel Docenten. Hernoem de kolomnaam met het aantal docenten per 
+woonplaats naar DocentenPerWoonplaats. 
+
+USE MBO_ICT; 
+SELECT Woonplaats, COUNT(DocentNummer) AS DocentenPerWoonplaats FROM 
+Docenten GROUP BY Woonplaats; 
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer de woonplaats en het aantal docenten die in de betreffende woonplaatsen 
+wonen uit de tabel Docenten waar het aantal docenten in de betreffende woonplaats 
+groter is dan één. Hernoem de kolomnaam met het aantal docenten per woonplaats 
+naar DocentenPerWoonplaats. 
+
+USE MBO_ICT; 
+SELECT Woonplaats, COUNT(DocentNummer) AS DocentenPerWoonplaats FROM 
+Docenten GROUP BY Woonplaats HAVING DocentenPerWoonplaats > 1; 
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Complex: 
+
+1) Selecteer alle gegevens uit de tabel Docenten van al de docenten waarvoor nog géén 
+salaris in de tabel Salarissen is ingevoerd. 
+m.b.v. SUB-query: 
+
+USE MBO_ICT; 
+SELECT * FROM Docenten WHERE DocentNummer NOT IN (SELECT DocentNummer 
+FROM Salarissen); 
+
+M.b.v. JOIN: 
+
+USE MBO_ICT; 
+SELECT Docenten.* FROM Docenten LEFT OUTER JOIN Salarissen ON 
+Docenten.DocentNummer = Salarissen.DocentNummer WHERE 
+Salarissen.DocentNummer IS NULL; 
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer het docentnummer en het salaris uit de tabel Salarissen van de docenten die 
+het hoogste salaris van alle docenten hebben. 
+M.b.v. SUB-query: 
+ 
+USE MBO_ICT; 
+SELECT DocentNummer, Salaris FROM Salarissen WHERE Salaris = (SELECT 
+MAX(Salaris) FROM Salarissen); 
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Selecteer het docentnummer, de voornaam, het tussenvoegsel en de achternaam uit de 
+tabel Docenten van de docenten die het hoogste salaris van alle docenten hebben. 
+ 
+USE MBO_ICT; 
+SELECT DocentNummer, Voornaam, Tussenvoegsel, Achternaam FROM Docenten 
+WHERE DocentNummer IN (SELECT DocentNummer FROM Salarissen WHERE Salaris 
+= (SELECT MAX(Salaris) FROM Salarissen)); 
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Gegevens toevoegen, aanpassen, verwijderen 
+
+Voer een salaris van 4000 in voor een nieuwe docent met docentnummer 23 in de tabel 
+Salarissen.
+ 
+USE MBO_ICT; 
+INSERT INTO Docenten VALUES (23,'Albert','','Hein','M','1966-9
+11','Zoetermeer',2021,'Winkelstraat',30,'','2722 GA','Zoetermeer'); 
+INSERT INTO Salarissen VALUES (23,4000); 
